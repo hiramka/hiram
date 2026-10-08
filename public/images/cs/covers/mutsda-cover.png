@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/me-favicon.jpg" />
+    <!-- Images preloads for Hero-Section Images  -->
+    <!-- <link
+      rel="preload"
+      as="image"
+      href="/images/me-small"
+      type="image/avif"
+      imagesrcset="/images/me-small.avif 480w, /images/me-small-800.avif 800w, /images/me-small-1200.avif 1200w"
+      imagesizes="100vw"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Waithaka | Software Engineer</title>
+    <script type="module" crossorigin src="/assets/index-Bba72ahn.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B147D0GZ.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
