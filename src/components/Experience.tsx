@@ -25,7 +25,7 @@ export const Experience: React.FC = () => {
       type: 'Hackathon & Open Source',
       description: 'Co-creator and technical architect for PastLens, an AI-powered digital heritage archiving platform.',
       achievements: [
-        'Awarded 1st Runner-Up at JKUAT Tech Hackathon 2025 among 40+ engineering teams',
+        'Awarded 1st Runner-Up at Kemu Tech Hackathon 2025 among 40+ engineering teams',
         'Implemented WebGL hardware-accelerated gallery rendering for 3D historical artifacts',
         'Constructed automated AI metadata generation pipeline using Google Gemini Vision API',
       ],

@@ -140,7 +140,7 @@ export const App: React.FC = () => {
 
             <div className="space-y-3">
               {[
-                { name: 'pastlens-v2.0/', desc: 'AI Digital Museum (1st Runner Up JKUAT)', link: 'https://pastlens.vercel.app/' },
+                { name: 'pastlens-v2.0/', desc: 'AI Digital Museum (1st Runner Up KeMU)', link: 'https://pastlens.vercel.app/' },
                 { name: 'sauti-ai-assistant/', desc: 'Swahili Voice Financial Assistant', link: 'https://sauti-ai-demo.vercel.app/' },
                 { name: 'devpulse-analytics/', desc: 'Engineering Velocity Insights', link: 'https://devpulse.vercel.app/' },
               ].map((item, idx) => (

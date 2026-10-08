@@ -4,10 +4,10 @@ import { ScrollReveal } from './ScrollReveal';
 
 export const CommunityImpact: React.FC = () => {
   const row1 = [
-    { title: 'JKUAT Hackathon 1st Runner-Up', category: 'HACKATHON', icon: Award, color: 'text-amber-400', badgeBg: 'bg-amber-500/10 border-amber-500/30' },
+
     { title: 'Volunteer Dev Community Mentor', category: 'MENTORSHIP', icon: Users, color: 'text-emerald-400', badgeBg: 'bg-emerald-500/10 border-emerald-500/30' },
     { title: 'Campus Coding Workshop', category: 'WORKSHOP', icon: Code, color: 'text-cyan-400', badgeBg: 'bg-cyan-500/10 border-cyan-500/30' },
-    { title: 'PastLens Team Lead Presentation', category: 'PRESENTATION', icon: Presentation, color: 'text-purple-400', badgeBg: 'bg-purple-500/10 border-purple-500/30' },
+
   ];
 
   const row2 = [
