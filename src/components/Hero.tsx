@@ -9,6 +9,7 @@ import {
 import confetti from 'canvas-confetti';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { soundFx } from '../utils/soundEffects';
+import { web3Socket, Web3Data } from '../utils/web3Socket';
 
 interface HeroProps {
   onOpenContact: () => void;
@@ -35,6 +36,12 @@ export const Hero: React.FC<HeroProps> = ({
   onToggleTheme,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [web3Data, setWeb3Data] = useState<Web3Data>(web3Socket.getData());
+
+  useEffect(() => {
+    const unsub = web3Socket.subscribe((data) => setWeb3Data(data));
+    return () => unsub();
+  }, []);
 
   // Responsive layout computation to prevent overlaps on any viewport
   const getInitialPositions = (): { [key: string]: Position } => {
@@ -132,10 +139,26 @@ export const Hero: React.FC<HeroProps> = ({
   return (
     <section id="home" className="relative min-h-[720px] w-full pt-4 pb-12 overflow-hidden">
       {/* Top Controls Bar */}
-      <div className="flex items-center justify-between mb-4 text-xs font-mono text-slate-400">
-        <span className="flex items-center gap-1.5 text-blue-400 font-semibold">
-          <Sparkles size={14} /> CANVAS BLUEPRINT WORKSPACE
-        </span>
+      <div className="flex items-center justify-between mb-4 text-xs font-mono text-slate-400 gap-2 flex-wrap">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 text-blue-400 font-semibold">
+            <Sparkles size={14} /> CANVAS BLUEPRINT WORKSPACE
+          </span>
+
+          {/* Live Web3 Socket Telemetry Badge */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-[#0d1424] border border-[#1e2e4a] text-[11px] font-mono shadow-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-emerald-400 font-bold">WEB3 SOCKET</span>
+            <span className="text-slate-600">|</span>
+            <span className="text-slate-200 font-bold">ETH ${web3Data.ethPrice}</span>
+            <span className="text-slate-600">|</span>
+            <span className="text-amber-400">{web3Data.gasGwei} Gwei</span>
+          </div>
+        </div>
+
         <button
           onClick={resetPositions}
           className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer btn-tactile"

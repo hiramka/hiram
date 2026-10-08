@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Terminal as TerminalIcon, Maximize2, Minimize2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { web3Socket } from '../utils/web3Socket';
 
 interface TerminalModalProps {
   isOpen: boolean;
@@ -52,6 +53,7 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({ isOpen, onClose })
             <p><span className="text-emerald-400 w-24 inline-block font-bold">whoami</span> — Display engineer bio & profile</p>
             <p><span className="text-emerald-400 w-24 inline-block font-bold">projects</span> — List shipped production projects</p>
             <p><span className="text-emerald-400 w-24 inline-block font-bold">skills</span> — Display tech stack matrix</p>
+            <p><span className="text-emerald-400 w-24 inline-block font-bold">web3</span> — Stream live Web3 WebSocket telemetry ⚡</p>
             <p><span className="text-emerald-400 w-24 inline-block font-bold">contact</span> — Get direct contact channels</p>
             <p><span className="text-emerald-400 w-24 inline-block font-bold">matrix</span> — Toggle digital rain mode 🕶️</p>
             <p><span className="text-emerald-400 w-24 inline-block font-bold">sudo hire</span> — Hire Hiram Karomo🎉</p>
@@ -87,10 +89,37 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({ isOpen, onClose })
           <div className="text-xs space-y-1">
             <p className="text-cyan-400 font-bold">🛠 Tech Stack:</p>
             <p>Frontend: React, Next.js, TypeScript, Tailwind CSS, WebGL</p>
-            <p>Backend: Node.js, Express, Python, FastAPI, Google Gemini API</p>
+            <p>Backend: Node.js, Express, Python, FastAPI, Google Gemini API, WebSockets</p>
             <p>Database: PostgreSQL, MongoDB, Prisma ORM, Redis</p>
           </div>
         );
+        break;
+
+      case 'web3':
+      case 'socket':
+      case 'web3socket':
+        {
+          const data = web3Socket.getData();
+          outputNode = (
+            <div className="text-xs space-y-1.5 font-mono p-2.5 rounded-xl bg-[#0b1329] border border-emerald-500/40 text-emerald-300 shadow-lg">
+              <div className="flex items-center justify-between border-b border-emerald-500/30 pb-1">
+                <span className="font-bold text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  ⚡ LIVE WEB3 WEBSOCKET TELEMETRY:
+                </span>
+                <span className="text-[10px] text-slate-400">Ping: {data.latency}ms</span>
+              </div>
+              <p>• Socket Status: <span className="text-emerald-400 font-bold uppercase">{data.status} 🟢</span></p>
+              <p>• ETH/USDT Realtime Ticker: <span className="text-white font-bold">${data.ethPrice}</span></p>
+              <p>• SOL/USDT Realtime Ticker: <span className="text-sky-300 font-bold">${data.solPrice}</span></p>
+              <p>• Ethereum Gas Index: <span className="text-amber-300 font-bold">{data.gasGwei} Gwei</span></p>
+              <p>• Current Block Height: <span className="text-slate-200 font-bold">#{data.blockHeight}</span></p>
+              <p className="text-[10px] text-slate-400 pt-0.5 border-t border-slate-800">
+                Connected to WebSocket stream • Last updated: {data.lastUpdated}
+              </p>
+            </div>
+          );
+        }
         break;
 
       case 'contact':
