@@ -7,6 +7,7 @@ interface MagneticButtonProps {
   href?: string;
   target?: string;
   rel?: string;
+  title?: string;
 }
 
 export const MagneticButton: React.FC<MagneticButtonProps> = ({
@@ -16,6 +17,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
   href,
   target,
   rel,
+  title,
 }) => {
   const btnRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -47,6 +49,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
         href={href}
         target={target}
         rel={rel}
+        title={title}
         onClick={onClick}
         style={{
           transform: `translate3d(${position.x.toFixed(2)}px, ${position.y.toFixed(2)}px, 0)`,
