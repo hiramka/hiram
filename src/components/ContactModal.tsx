@@ -13,7 +13,6 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     name: '',
     email: '',
     projectType: 'Web Development',
-    budget: '$1k — $5k',
     message: '',
   });
 
@@ -120,39 +119,21 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Project Category
-                </label>
-                <select
-                  value={form.projectType}
-                  onChange={(e) => setForm({ ...form, projectType: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-[#0d1424] text-white text-sm outline-none focus:border-blue-500"
-                >
-                  <option value="Web Development">Web Development</option>
-                  <option value="API Architecture">API Architecture</option>
-                  <option value="M-Pesa Integrations">M-Pesa / Fintech Integrations</option>
-                  <option value="DevOps / Monitoring">DevOps / Monitoring</option>
-                  <option value="General Inquiry">General Inquiry</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Budget Estimate
-                </label>
-                <select
-                  value={form.budget}
-                  onChange={(e) => setForm({ ...form, budget: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-[#0d1424] text-white text-sm outline-none focus:border-blue-500"
-                >
-                  <option value="< $1k">&lt; $1,000</option>
-                  <option value="$1k — $5k">$1,000 — $5,000</option>
-                  <option value="$5k — $15k">$5,000 — $15,000</option>
-                  <option value="> $15k">$15,000+</option>
-                </select>
-              </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">
+                Project Category
+              </label>
+              <select
+                value={form.projectType}
+                onChange={(e) => setForm({ ...form, projectType: e.target.value })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-[#0d1424] text-white text-sm outline-none focus:border-blue-500"
+              >
+                <option value="Web Development">Web Development</option>
+                <option value="API Architecture">API Architecture</option>
+                <option value="M-Pesa Integrations">M-Pesa / Fintech Integrations</option>
+                <option value="DevOps / Monitoring">DevOps / Monitoring</option>
+                <option value="General Inquiry">General Inquiry</option>
+              </select>
             </div>
 
             <div>
