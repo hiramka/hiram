@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { RefreshCw, Trophy } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 export const TicTacToeSection: React.FC = () => {
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
@@ -32,7 +31,9 @@ export const TicTacToeSection: React.FC = () => {
     const win = calculateWinner(nextBoard);
     if (win) {
       setWinner(win);
-      if (win === 'X') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      if (win === 'X') {
+        import('canvas-confetti').then(m => m.default({ particleCount: 100, spread: 70, origin: { y: 0.6 } }));
+      }
       return;
     }
 

@@ -68,6 +68,8 @@ export const Projects: React.FC = () => {
                   <img
                     src={project.imageUrl}
                     alt={project.title}
+                    loading="lazy"
+                    decoding="async"
                     className="image-zoom w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <span className="absolute top-4 left-4 px-3 py-1 rounded-md text-xs font-mono font-bold bg-slate-950/80 text-white backdrop-blur-md border border-slate-700">

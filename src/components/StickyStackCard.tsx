@@ -19,7 +19,20 @@ export const StickyStackCard: React.FC<StickyStackCardProps> = ({
     opacity: 1,
   });
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
+
     let animationFrameId: number;
 
     const handleScroll = () => {
@@ -63,18 +76,18 @@ export const StickyStackCard: React.FC<StickyStackCardProps> = ({
       window.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [index, totalCards, topOffset]);
+  }, [index, totalCards, topOffset, isMobile]);
 
   return (
     <div
       ref={cardRef}
-      className="sticky-stack-card transition-all duration-150 ease-out mb-12 sm:mb-20"
+      className="sticky-stack-card transition-all duration-150 ease-out mb-8 sm:mb-20"
       style={{
-        position: 'sticky',
-        top: `${topOffset}px`,
+        position: isMobile ? 'relative' : 'sticky',
+        top: isMobile ? 'auto' : `${topOffset}px`,
         zIndex: index + 10,
-        willChange: 'transform, opacity',
-        ...style,
+        willChange: isMobile ? 'auto' : 'transform, opacity',
+        ...(isMobile ? {} : style),
       }}
     >
       {children}

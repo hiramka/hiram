@@ -4,9 +4,13 @@ import {
   MessageSquare,
   RotateCcw,
   Sparkles,
-  Folder
+  Folder,
+  Terminal,
+  Coffee,
+  Sun,
+  Moon,
+  PhoneCall
 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { soundFx } from '../utils/soundEffects';
 import { web3Socket, Web3Data } from '../utils/web3Socket';
@@ -37,6 +41,7 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [web3Data, setWeb3Data] = useState<Web3Data>(web3Socket.getData());
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
 
   useEffect(() => {
     const unsub = web3Socket.subscribe((data) => setWeb3Data(data));
@@ -46,19 +51,6 @@ export const Hero: React.FC<HeroProps> = ({
   // Responsive layout computation to prevent overlaps on any viewport
   const getInitialPositions = (): { [key: string]: Position } => {
     const width = typeof window !== 'undefined' ? Math.min(window.innerWidth - 64, 1100) : 1000;
-
-    if (width < 640) {
-      // Mobile positioning (scaled down, non-overlapping)
-      return {
-        coffee: { x: 10, y: 10 },
-        profileCard: { x: 105, y: 10 },
-        stickyNote: { x: 10, y: 310 },
-        lamp: { x: 220, y: 310 },
-        phone: { x: 10, y: 530 },
-        folder: { x: 120, y: 530 },
-        terminal: { x: 10, y: 640 },
-      };
-    }
 
     if (width < 960) {
       // Tablet / Medium screens
@@ -93,7 +85,8 @@ export const Hero: React.FC<HeroProps> = ({
 
   useEffect(() => {
     const handleResize = () => {
-      // Only adjust if not dragging
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
       if (!activeDrag) {
         setPositions(getInitialPositions());
       }
@@ -137,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section id="home" className="relative min-h-[720px] w-full pt-4 pb-12 overflow-hidden">
+    <section id="home" className="relative min-h-[580px] md:min-h-[720px] w-full pt-4 pb-8 md:pb-12 overflow-hidden">
       {/* Top Controls Bar */}
       <div className="flex items-center justify-between mb-4 text-xs font-mono text-slate-400 gap-2 flex-wrap">
         <div className="flex items-center gap-3">
@@ -146,32 +139,170 @@ export const Hero: React.FC<HeroProps> = ({
           </span>
 
           {/* Live Web3 Socket Telemetry Badge */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-[#0d1424] border border-[#1e2e4a] text-[11px] font-mono shadow-sm">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#0d1424] border border-[#1e2e4a] text-[11px] font-mono shadow-sm">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-emerald-400 font-bold">WEB3 SOCKET</span>
+            <span className="text-emerald-400 font-bold">WEB3</span>
             <span className="text-slate-600">|</span>
             <span className="text-slate-200 font-bold">ETH ${web3Data.ethPrice}</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-amber-400">{web3Data.gasGwei} Gwei</span>
+            <span className="hidden sm:inline text-slate-600">|</span>
+            <span className="hidden sm:inline text-amber-400">{web3Data.gasGwei} Gwei</span>
           </div>
         </div>
 
-        <button
-          onClick={resetPositions}
-          className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer btn-tactile"
-        >
-          <RotateCcw size={12} /> Reset Canvas Items
-        </button>
+        {!isMobile && (
+          <button
+            onClick={resetPositions}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer btn-tactile"
+          >
+            <RotateCcw size={12} /> Reset Canvas Items
+          </button>
+        )}
       </div>
 
-      {/* Main Interactive Blueprint Canvas Area */}
-      <div
-        ref={containerRef}
-        className="relative w-full min-h-[660px] rounded-3xl border border-slate-800/80 bg-[#070a13]/70 backdrop-blur-xl p-4 sm:p-8 overflow-hidden"
-      >
+      {isMobile ? (
+        /* Mobile-Optimized Layout */
+        <div className="w-full rounded-3xl border border-slate-800/80 bg-[#070a13]/70 backdrop-blur-xl p-5 space-y-6">
+          {/* Profile Card Header */}
+          <div className="relative max-w-xs mx-auto p-5 rounded-[28px] bg-[#0d1526]/95 border-2 border-[#1e2d4a] shadow-2xl text-center space-y-3">
+            <div className="relative w-24 h-24 mx-auto rounded-2xl overflow-hidden ring-2 ring-blue-500/30">
+              <img
+                src="/images/me-small.jpg"
+                alt={PORTFOLIO_DATA.personal.name}
+                className="w-full h-full object-cover"
+                loading="eager"
+              />
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center justify-center gap-1.5">
+                <h2 className="text-base font-bold font-display text-white">{PORTFOLIO_DATA.personal.name}</h2>
+                <span className="w-4 h-4 rounded-full bg-[#00d084] text-slate-950 text-[10px] font-bold flex items-center justify-center shadow-md">✓</span>
+              </div>
+              <p className="text-[11px] font-mono text-slate-400">{PORTFOLIO_DATA.personal.title}</p>
+            </div>
+            <div className="flex items-center justify-center gap-2 pt-1">
+              <button
+                onClick={onOpenContact}
+                className="btn-tactile px-4 py-2 rounded-full bg-white text-slate-950 font-bold text-xs shadow-lg flex items-center gap-1 cursor-pointer"
+              >
+                LET'S TALK <ArrowUpRight size={13} className="arrow-icon" />
+              </button>
+              <a
+                href={`https://wa.me/${PORTFOLIO_DATA.personal.whatsappNumber}?text=${encodeURIComponent(PORTFOLIO_DATA.personal.whatsappMessage)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-tactile w-8 h-8 rounded-full bg-white/90 text-slate-950 flex items-center justify-center shadow-lg"
+                title="WhatsApp Direct"
+              >
+                <MessageSquare size={14} className="fill-emerald-600 text-emerald-600" />
+              </a>
+            </div>
+          </div>
+
+          {/* Main Editorial Headline */}
+          <div className="text-center space-y-3 pt-2">
+            <p className="text-[11px] font-mono tracking-widest text-slate-400 uppercase">
+              • {PORTFOLIO_DATA.personal.eyebrow}
+            </p>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+              I turn ideas into{' '}
+              <span className="font-serif italic bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                clear custom direction
+              </span>
+              <br />
+              & ship software that{' '}
+              <span className="text-[#ff5533]">sells & converts.</span>
+            </h1>
+
+            {/* Action Buttons Below Headline */}
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={onOpenMiniGame}
+                className="btn-tactile px-5 py-2.5 rounded-full bg-[#18181b] text-white font-bold text-xs shadow-xl cursor-pointer flex items-center gap-1.5 hover:bg-black"
+              >
+                PLAY A ROUND ↓
+              </button>
+              <button
+                onClick={onOpenResume}
+                className="btn-tactile px-5 py-2.5 rounded-full bg-white/70 backdrop-blur-md border border-slate-300 text-slate-900 font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5 hover:bg-white"
+              >
+                ↓ RÉSUMÉ
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Mobile Desk Tools Tray */}
+          <div className="pt-3 border-t border-slate-800/80">
+            <p className="text-[11px] font-mono text-center text-slate-400 mb-2.5">
+              ⚡ Interactive Tools (Tap to test):
+            </p>
+            <div className="grid grid-cols-4 gap-2 text-center">
+              {/* Coffee */}
+              <button
+                onClick={() => {
+                  soundFx.playCoffeeSip();
+                  import('canvas-confetti').then((m) => m.default({ particleCount: 30, spread: 45, origin: { y: 0.6 } }));
+                }}
+                className="p-2.5 rounded-2xl bg-[#0d1424] border border-[#1e2e4a] flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                title="Sip Coffee"
+              >
+                <img src="/images/coffee1.png" alt="Coffee" className="w-6 h-8 object-contain" />
+                <span className="text-[10px] font-mono text-slate-300 font-bold">Coffee</span>
+              </button>
+
+              {/* Lamp */}
+              <button
+                onClick={() => {
+                  soundFx.playLampSwitch();
+                  onToggleTheme?.();
+                }}
+                className="p-2.5 rounded-2xl bg-[#0d1424] border border-[#1e2e4a] flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                title="Toggle Theme"
+              >
+                <img src="/images/bluelamp1.png" alt="Lamp" className="w-7 h-8 object-contain" />
+                <span className="text-[10px] font-mono text-slate-300 font-bold">Mood</span>
+              </button>
+
+              {/* Phone */}
+              <button
+                onClick={() => {
+                  soundFx.playPhoneRing();
+                  setPhoneRinging(true);
+                  onOpenContact();
+                  setTimeout(() => setPhoneRinging(false), 2000);
+                }}
+                className="p-2.5 rounded-2xl bg-[#0d1424] border border-[#1e2e4a] flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                title="Contact"
+              >
+                <img src="/images/blue_phone.png" alt="Phone" className={`w-7 h-8 object-contain ${phoneRinging ? 'animate-bounce' : ''}`} />
+                <span className="text-[10px] font-mono text-slate-300 font-bold">Contact</span>
+              </button>
+
+              {/* Terminal */}
+              <button
+                onClick={() => {
+                  soundFx.playTerminalClack();
+                  onOpenTerminal();
+                }}
+                className="p-2.5 rounded-2xl bg-[#0d1424] border border-[#1e2e4a] flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                title="Terminal"
+              >
+                <div className="w-7 h-8 rounded-lg bg-sky-950 border border-sky-400 flex items-center justify-center text-sky-400">
+                  <Terminal size={15} />
+                </div>
+                <span className="text-[10px] font-mono text-slate-300 font-bold">Terminal</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Desktop Interactive Blueprint Canvas Area */
+        <div
+          ref={containerRef}
+          className="relative w-full min-h-[660px] rounded-3xl border border-slate-800/80 bg-[#070a13]/70 backdrop-blur-xl p-4 sm:p-8 overflow-hidden"
+        >
         {/* 1. Coffee Cup */}
         <div
           className="draggable-item text-center group z-20"
@@ -183,7 +314,7 @@ export const Hero: React.FC<HeroProps> = ({
           onPointerUp={(e) => handlePointerUp('coffee', e)}
           onClick={() => {
             soundFx.playCoffeeSip();
-            confetti({ particleCount: 40, spread: 50, origin: { x: 0.2, y: 0.2 } });
+            import('canvas-confetti').then((m) => m.default({ particleCount: 40, spread: 50, origin: { x: 0.2, y: 0.2 } }));
           }}
           title="Click for coffee ☕"
         >
@@ -458,6 +589,7 @@ export const Hero: React.FC<HeroProps> = ({
           </p>
         </div>
       </div>
+      )}
     </section>
   );
 };

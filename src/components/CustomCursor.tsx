@@ -1,29 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 export const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [cursorState, setCursorState] = useState<'default' | 'hover' | 'view'>('default');
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
+    // Detect mobile touch screen
+    if (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
+      setIsTouchDevice(true);
+      return;
+    }
+
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-      const target = e.target as HTMLElement;
-      const isProjectCard = target.closest('.project-card-interactive') || target.closest('.project-banner');
-      const isInteractive = target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a');
+      rafRef.current = requestAnimationFrame(() => {
+        setPosition({ x: e.clientX, y: e.clientY });
 
-      if (isProjectCard) {
-        setCursorState('view');
-      } else if (isInteractive) {
-        setCursorState('hover');
-      } else {
-        setCursorState('default');
-      }
+        const target = e.target as HTMLElement;
+        if (!target) return;
+
+        const isProjectCard = target.closest('.project-card-interactive') || target.closest('.project-banner');
+        const isInteractive = target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a');
+
+        if (isProjectCard) {
+          setCursorState('view');
+        } else if (isInteractive) {
+          setCursorState('hover');
+        } else {
+          setCursorState('default');
+        }
+      });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
+
+  if (isTouchDevice) return null;
 
   return (
     <div

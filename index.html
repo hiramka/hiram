@@ -26,12 +26,30 @@
   <meta name="twitter:description" content="Full Stack & Systems Engineer based in Nairobi, Kenya. Founder of Ascendancy Solutions." />
   <meta name="twitter:image" content="/images/me-small.jpg" />
 
-  <!-- Google Fonts -->
+  <!-- Critical Asset Preloading for Fast LCP (Largest Contentful Paint) -->
+  <link rel="preload" href="/images/me-small.jpg" as="image" type="image/jpeg" fetchpriority="high" />
+  <link rel="preload" href="/images/bluelamp1.png" as="image" type="image/png" fetchpriority="high" />
+
+  <!-- Non-blocking Google Fonts Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link
+    rel="preload"
+    as="style"
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap"
-    rel="stylesheet">
+  />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap"
+    />
+  </noscript>
 </head>
 
 <body>

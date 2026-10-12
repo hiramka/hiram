@@ -27,31 +27,60 @@ class Web3SocketManager {
     lastUpdated: new Date().toLocaleTimeString(),
   };
 
+  private isConnecting = false;
+
   constructor() {
-    this.connect();
+    // Defer initialization so initial page render and hydration are never blocked
   }
 
   public subscribe(listener: Listener): () => void {
     this.listeners.add(listener);
     listener(this.data); // Immediately emit current state
+    
+    // Connect lazily in idle time only when subscribers exist
+    if (!this.isConnecting && !this.ws) {
+      if (typeof window !== 'undefined') {
+        const defer = window.requestIdleCallback || ((cb: () => void) => setTimeout(cb, 1200));
+        defer(() => this.connect());
+      }
+    }
+
     return () => this.listeners.delete(listener);
   }
 
-  private notify() {
+  private lastNotifyTime: number = 0;
+
+  private notify(force = false) {
+    const now = Date.now();
+    if (!force && now - this.lastNotifyTime < 5000) {
+      return;
+    }
+    this.lastNotifyTime = now;
     this.data.lastUpdated = new Date().toLocaleTimeString();
     this.listeners.forEach((listener) => listener(this.data));
   }
 
   private connect() {
+    if (this.isConnecting || typeof window === 'undefined') return;
+    this.isConnecting = true;
+
     try {
-      // Connect to Binance ETH ticker stream for live real-time crypto Web3 data
       this.pingStart = Date.now();
+      const connectionTimeout = setTimeout(() => {
+        if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
+          try { this.ws.close(); } catch {}
+          this.fallbackMock();
+        }
+      }, 2500);
+
       this.ws = new WebSocket('wss://stream.binance.com:9443/ws/ethusdt@ticker');
 
       this.ws.onopen = () => {
+        clearTimeout(connectionTimeout);
+        this.isConnecting = false;
         this.data.status = 'connected';
         this.data.latency = Math.max(12, Date.now() - this.pingStart);
-        this.notify();
+        this.notify(true);
       };
 
       this.ws.onmessage = (event) => {

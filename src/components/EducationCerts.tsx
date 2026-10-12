@@ -59,6 +59,8 @@ export const EducationCerts: React.FC = () => {
                 <img
                   src={c.imageUrl}
                   alt={c.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute top-3 left-3 px-3 py-1 rounded-md text-[11px] font-mono font-semibold bg-slate-950/85 text-slate-200 backdrop-blur-md border border-slate-800">

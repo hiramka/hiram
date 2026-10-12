@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Dock } from './components/Dock';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
@@ -9,15 +9,17 @@ import { TicTacToeSection } from './components/TicTacToeSection';
 import { Skills } from './components/Skills';
 import { Writing } from './components/Writing';
 import { ContactSection } from './components/ContactSection';
-import { TerminalModal } from './components/TerminalModal';
-import { MiniGameModal } from './components/MiniGameModal';
-import { ContactModal } from './components/ContactModal';
-import { ResumeModal } from './components/ResumeModal';
 import { Footer } from './components/Footer';
 import { FloatingControls } from './components/FloatingControls';
 import { CustomCursor } from './components/CustomCursor';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { Folder, X, ExternalLink } from 'lucide-react';
+
+// Lazy load heavy interactive modal overlays for maximum initial page load speed
+const TerminalModal = lazy(() => import('./components/TerminalModal').then(m => ({ default: m.TerminalModal })));
+const MiniGameModal = lazy(() => import('./components/MiniGameModal').then(m => ({ default: m.MiniGameModal })));
+const ContactModal = lazy(() => import('./components/ContactModal').then(m => ({ default: m.ContactModal })));
+const ResumeModal = lazy(() => import('./components/ResumeModal').then(m => ({ default: m.ResumeModal })));
 
 export const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
@@ -69,7 +71,7 @@ export const App: React.FC = () => {
         />
 
         {/* Main Content Container */}
-        <main className="flex-1 ml-0 md:ml-24 px-4 sm:px-8 py-4 max-w-7xl">
+        <main className="flex-1 ml-0 md:ml-24 px-3 sm:px-8 py-4 pb-24 md:pb-8 max-w-7xl w-full overflow-hidden">
           <Hero
             onOpenContact={() => setContactOpen(true)}
             onOpenMiniGame={() => setMiniGameOpen(true)}
@@ -98,26 +100,28 @@ export const App: React.FC = () => {
         onToggleTheme={toggleTheme}
       />
 
-      {/* Modals & Interactive Overlays */}
-      <TerminalModal
-        isOpen={terminalOpen}
-        onClose={() => setTerminalOpen(false)}
-      />
+      {/* Modals & Interactive Overlays (Lazy Loaded) */}
+      <Suspense fallback={null}>
+        <TerminalModal
+          isOpen={terminalOpen}
+          onClose={() => setTerminalOpen(false)}
+        />
 
-      <MiniGameModal
-        isOpen={miniGameOpen}
-        onClose={() => setMiniGameOpen(false)}
-      />
+        <MiniGameModal
+          isOpen={miniGameOpen}
+          onClose={() => setMiniGameOpen(false)}
+        />
 
-      <ContactModal
-        isOpen={contactOpen}
-        onClose={() => setContactOpen(false)}
-      />
+        <ContactModal
+          isOpen={contactOpen}
+          onClose={() => setContactOpen(false)}
+        />
 
-      <ResumeModal
-        isOpen={resumeOpen}
-        onClose={() => setResumeOpen(false)}
-      />
+        <ResumeModal
+          isOpen={resumeOpen}
+          onClose={() => setResumeOpen(false)}
+        />
+      </Suspense>
 
       {/* Quick Folder Drawer */}
       {folderOpen && (
